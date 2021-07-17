@@ -35,6 +35,7 @@ const theme = extendTheme({
     },
     Heading: {
       // Can pass also function, giving you access theming tools
+      textAlign: 'center',
       baseStyle: ({colorMode}) => {
         return {
           color: colorMode === 'dark' ? 'red.300' : 'blue.300',
