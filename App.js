@@ -18,8 +18,10 @@ import {
   View,
 } from 'react-native';
 import {NativeBaseProvider, extendTheme} from 'native-base';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
 
-import Dashboard from './src/pages/dashboard';
+import DashboardPage from './src/pages/dashboard';
 import {WeatherProvider} from './src/contexts/weather';
 
 const theme = extendTheme({
@@ -46,24 +48,45 @@ const theme = extendTheme({
   },
 });
 
+const Stack = createStackNavigator();
+
+function DashboardScreen(props) {
+  return (
+    <WeatherProvider>
+      <DashboardPage {...props} />
+    </WeatherProvider>
+  );
+}
+
+function CityScreen(props) {
+  const {weatherData} = props?.route?.params;
+  return (
+    <View>
+      <Text>{weatherData?.name}</Text>
+    </View>
+  );
+}
+
 const App: () => Node = () => {
   const isDarkMode = useColorScheme() === 'dark';
-
   // const backgroundStyle = {
   //   backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   // };
 
   return (
-    <WeatherProvider>
-      <NativeBaseProvider theme={theme}>
-        <SafeAreaView>
-          <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-          <ScrollView contentInsetAdjustmentBehavior="automatic">
-            <Dashboard />
-          </ScrollView>
-        </SafeAreaView>
-      </NativeBaseProvider>
-    </WeatherProvider>
+    <NativeBaseProvider>
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="dashboard"
+          screenOptions={{
+            headerShown: false,
+          }}>
+          <Stack.Screen name="dashboard" component={DashboardScreen} />
+          <Stack.Screen name="city" component={CityScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </NativeBaseProvider>
   );
 };
 

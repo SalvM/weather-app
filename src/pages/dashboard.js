@@ -48,12 +48,13 @@ const styles = StyleSheet.create({
 });
 
 const kelvinToCelsius = kelvin => Math.floor(kelvin - 273.15);
-const renderWeatherItem = (weatherData, key) => {
+
+const renderWeatherItem = (weatherData, key, navigateFn) => {
   if (!weatherData) {
     return null;
   }
   return (
-    <Pressable key={key}>
+    <Pressable key={key} onPress={() => navigateFn('city', {weatherData})}>
       <View style={styles.card}>
         <View>
           <Text>{weatherData.name}</Text>
@@ -69,18 +70,26 @@ const renderWeatherItem = (weatherData, key) => {
   );
 };
 
-const renderWeatherItemList = list => {
+const renderWeatherItemList = (list, navigateFn) => {
   if (!(list && Array.isArray(list))) {
     return null;
   }
-  return <View>{list.map(renderWeatherItem)}</View>;
+  return (
+    <View>
+      {list.map((item, index) => renderWeatherItem(item, index, navigateFn))}
+    </View>
+  );
 };
 
 function DashboardPage(props) {
-  const {dispatch, state, updateWeaterReducer} = useContext(WeatherContext);
+  const navigateTo = (routeName, routeParams = {}) =>
+    props.navigation.navigate(routeName, routeParams);
+  const goBack = () => props.navigation.goBack();
+
+  const {state, updateWeaterReducer} = useContext(WeatherContext);
   const welcomeMessage = 'Good morning Mario!';
   const weatherList = Object.values(state);
-  const weatherItemList = renderWeatherItemList(weatherList);
+  const weatherItemList = renderWeatherItemList(weatherList, navigateTo);
 
   useEffect(() => {
     updateWeaterReducer(['Amsterdam', 'London', 'Rome']);
