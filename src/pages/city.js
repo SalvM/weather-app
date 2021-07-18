@@ -166,7 +166,7 @@ export default function City(props) {
     <Box
       style={styles.container}
       bg={{
-        linearGradient: gradients?.[main],
+        linearGradient: gradients?.[main] || gradients.clouds,
       }}>
       <Header
         title={props?.name}
