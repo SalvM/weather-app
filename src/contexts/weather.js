@@ -1,18 +1,11 @@
 import React, {createContext} from 'react';
+import WeatherAPI from '../services/weather';
 
 const WeatherContext = createContext(null);
 
 async function getCity(cityName) {
   return new Promise(async (resolve, reject) => {
-    const res = await fetch(
-      `http://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=b2d61a00534fe567518effcb75e1cd58`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    );
+    const res = await WeatherAPI.getCity(cityName);
     res
       .json()
       .then(res => resolve(res))

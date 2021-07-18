@@ -1,15 +1,16 @@
+import {Dimensions} from 'react-native';
+
+const width = Dimensions.get('window').width; //full width
+const height = Dimensions.get('window').height; //full height
+
 import colors from './colors';
 
 const layout = {
   /* pages */
   container: {
-    flex: 1,
-    flexDirection: 'column',
-    width: '100%',
-    padding: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    alignSelf: 'stretch',
+    width,
+    height,
   },
   fill: {
     width: '100%',
@@ -76,7 +77,9 @@ const layout = {
   avatarTitle: {
     textAlign: 'center',
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: 24,
+    marginVertical: 4,
+    marginBottom: 12,
   },
   avatarSubTitle: {
     textAlign: 'center',

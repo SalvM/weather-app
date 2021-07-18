@@ -7,46 +7,19 @@
  */
 
 import React from 'react';
-import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-import {NativeBaseProvider, extendTheme} from 'native-base';
+import {StatusBar, Text, View} from 'react-native';
+import {AddIcon, extendTheme, NativeBaseProvider, Pressable} from 'native-base';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+import type {Node} from 'react';
 
 import DashboardPage from './src/pages/dashboard';
+import CityPage from './src/pages/city';
+
 import {WeatherProvider} from './src/contexts/weather';
 
-const theme = extendTheme({
-  components: {
-    Button: {
-      // Can simply pass default props to change default behaviour of components.
-      baseStyle: {
-        rounded: 'md',
-      },
-      defaultProps: {
-        colorScheme: 'red',
-      },
-    },
-    Heading: {
-      // Can pass also function, giving you access theming tools
-      textAlign: 'center',
-      baseStyle: ({colorMode}) => {
-        return {
-          color: colorMode === 'dark' ? 'red.300' : 'blue.300',
-          fontWeight: 'normal',
-        };
-      },
-    },
-  },
-});
+import colors from './src/styles/colors';
+import { NativeBaseConfigProvider } from 'native-base/lib/typescript/core/NativeBaseContext';
 
 const Stack = createStackNavigator();
 
@@ -60,22 +33,65 @@ function DashboardScreen(props) {
 
 function CityScreen(props) {
   const {weatherData} = props?.route?.params;
-  return (
-    <View>
-      <Text>{weatherData?.name}</Text>
-    </View>
-  );
+  props.navigation.setOptions({
+    title: weatherData?.name,
+    headerRight: () => (
+      <Pressable>
+        <AddIcon />
+      </Pressable>
+    ),
+  });
+  return <CityPage {...weatherData} />;
 }
 
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-  // const backgroundStyle = {
-  //   backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  // };
+const stackOptions = {
+  city: {
+    headerShown: true,
+    headerStyle: {
+      backgroundColor: colors.primary,
+    },
+    headerTintColor: '#f4f4f4',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
+  },
+};
 
+const config = {
+  dependencies: {
+    'linear-gradient': require('react-native-linear-gradient').default,
+  },
+};
+
+const mainTheme = extendTheme({
+  gradients: {
+    clear: {
+      colors: ['#6173DF', '#61a9df'],
+      start: [0, 0],
+      end: [1, 1],
+    },
+    rain: {
+      colors: ['#426aa8', '#6d89b5'],
+      start: [0, 0],
+      end: [1, 1],
+    },
+    clouds: {
+      colors: ['#495363', '#959aa3'],
+      start: [0, 0],
+      end: [1, 1],
+    },
+    thunderstorm: {
+      colors: ['#3e4e69', '#757c8a'],
+      start: [0, 0],
+      end: [1, 1],
+    },
+  },
+});
+
+const App: () => Node = () => {
   return (
-    <NativeBaseProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+    <NativeBaseProvider config={config} theme={mainTheme}>
+      <StatusBar />
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName="dashboard"
@@ -83,30 +99,15 @@ const App: () => Node = () => {
             headerShown: false,
           }}>
           <Stack.Screen name="dashboard" component={DashboardScreen} />
-          <Stack.Screen name="city" component={CityScreen} />
+          <Stack.Screen
+            name="city"
+            component={CityScreen}
+            options={stackOptions.city}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </NativeBaseProvider>
   );
 };
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;

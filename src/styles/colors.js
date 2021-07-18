@@ -12,8 +12,8 @@ const base = {
 
 /* THEMES */
 const solar = {
-  primary: '#f9b641',
-  secondary: '#f39f85',
+  primary: '#6173DF',
+  secondary: '#61a9df',
   tertiary: '#a34054',
   fourth: '#473430',
   fifth: '#23451f',
