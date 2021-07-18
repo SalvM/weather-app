@@ -26,9 +26,9 @@ export default function WeatherCard(props) {
   const iconPath = weatherIcon(props?.item?.icon);
   return (
     <Box
-      style={{minHeight: 128, minWidth: 128, borderRadius: 8}}
+      style={{minHeight: 128, minWidth: 96, borderRadius: 8}}
       bg="rgba(255, 255, 255, 0.2)"
-      p={8}
+      p={2}
       m={2}
       rounded="lg"
       maxWidth="90%">
@@ -42,7 +42,7 @@ export default function WeatherCard(props) {
           {temperature}°
         </Text>
       )}
-      <Image source={{uri: iconPath}} size="lg" alt={main} />
+      <Image source={{uri: iconPath}} size="lg" alt={main} resizeMode="cover" />
     </Box>
   );
 }

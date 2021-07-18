@@ -1,5 +1,6 @@
 import React, {useContext, useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
+import moment from 'moment';
 import {
   Box,
   Center,
@@ -40,7 +41,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const kelvinToCelsius = kelvin => Math.floor(kelvin - 273.15);
+const kelvinToCelsius = kelvin =>
+  isNaN(kelvin) ? null : Math.floor(kelvin - 273.15);
 
 const weatherIcon = id =>
   id ? `http://openweathermap.org/img/wn/${id}@2x.png` : null;
@@ -62,6 +64,9 @@ function DashboardPage(props) {
       iconPath = '';
     main = weather?.main?.toLowerCase();
     iconPath = weatherIcon(weather?.icon);
+
+    const shortDayName = moment(weatherData?.dt).format('dddd DD, MMMM');
+    const hour = moment(weatherData?.dt).format('HH:mm');
     return (
       <Pressable key={key} onPress={() => navigateFn('city', {weatherData})}>
         <Box
@@ -72,14 +77,33 @@ function DashboardPage(props) {
           }}
           p={4}
           shadow={3}>
-          <View>
-            <Text>{weatherData.name}</Text>
+          <View flex={1}>
+            <Text color="white" fontWeight="bold" fontSize="md">
+              {weatherData.name}
+            </Text>
+            <Text color="white" fontSize="xs" noOfLines={2} my={1}>
+              {shortDayName}
+            </Text>
+            <Text color="#d3d3d3" fontSize="xs">
+              {hour}
+            </Text>
           </View>
-          <View>
-            <Image source={{uri: iconPath}} size="lg" alt={main} />
+          <View flex={1}>
+            <Image
+              source={{uri: iconPath}}
+              size="lg"
+              alt={main}
+              resizeMode="cover"
+            />
           </View>
-          <View>
-            <Text style="">{kelvinToCelsius(weatherData.main?.temp)}°</Text>
+          <View flex={1}>
+            <Text
+              color="white"
+              fontWeight="bold"
+              fontSize="3xl"
+              textAlign="center">
+              {kelvinToCelsius(weatherData.main?.temp)}°
+            </Text>
           </View>
         </Box>
       </Pressable>
