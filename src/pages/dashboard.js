@@ -3,9 +3,6 @@ import {StyleSheet, View} from 'react-native';
 import moment from 'moment';
 import {
   Box,
-  Center,
-  Container,
-  Flex,
   Image,
   Text,
   useTheme,
@@ -120,6 +117,7 @@ function DashboardPage(props) {
       </View>
     );
   };
+
 
   const welcomeMessage = 'Good morning Mario!';
   const weatherList = Object.values(state);

@@ -1,6 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList, StyleSheet} from 'react-native';
-import {Box, Image, Text, useTheme, View} from 'native-base';
+import {
+  AddIcon,
+  ArrowBackIcon,
+  Box,
+  Image,
+  Pressable,
+  Text,
+  useTheme,
+  View,
+} from 'native-base';
 import moment from 'moment';
 
 import colors from '../styles/colors';
@@ -9,11 +18,11 @@ import WeatherAPI from './../services/weather';
 
 import WeatherCard from '../components/weatherCard';
 import Timeline from '../components/timeline';
+import Header from '../components/header';
 
 const styles = StyleSheet.create({
   container: {
     ...layout.container,
-    backgroundColor: colors.primary,
   },
   temp: {
     color: colors.white,
@@ -97,6 +106,8 @@ export default function City(props) {
 
   const [future, setFuture] = useState({});
 
+  const goBack = () => props.navigation.goBack();
+
   useEffect(() => {
     const {lat, lon} = props?.coord;
     getCityFuture(lat, lon).then(setFuture);
@@ -133,9 +144,23 @@ export default function City(props) {
     }));
   };
 
+  const renderHeaderLeftButton = cb => (
+    <Pressable onPress={cb}>
+      <ArrowBackIcon color={colors.white} size={7} ml={3} />
+    </Pressable>
+  );
+  const renderHeaderRightButton = cb => (
+    <Pressable onPress={cb}>
+      <AddIcon color={colors.white} size={5} mr={5} />
+    </Pressable>
+  );
+
   const dailyList = renderDailyList(dailyWeather());
   const iconPath = weatherIcon(weather?.icon);
   const main = weather?.main?.toLowerCase();
+
+  const headerLeftButton = renderHeaderLeftButton(goBack);
+  const headerRightButton = renderHeaderRightButton();
 
   return (
     <Box
@@ -143,6 +168,11 @@ export default function City(props) {
       bg={{
         linearGradient: gradients?.[main],
       }}>
+      <Header
+        title={props?.name}
+        leftButton={headerLeftButton}
+        rightButton={headerRightButton}
+      />
       <Text
         fontSize={'md'}
         style={styles.whiteCentered}

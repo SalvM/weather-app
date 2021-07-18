@@ -3,21 +3,10 @@ import moment from 'moment';
 
 import layout from '../styles/layout';
 
-import {
-  VStack,
-  HStack,
-  Avatar,
-  Image,
-  Text,
-  NativeBaseProvider,
-  AspectRatio,
-  Center,
-  Box,
-  Stack,
-  Heading,
-} from 'native-base';
+import {Image, Text, Box} from 'native-base';
 
-const weatherIcon = id => id ? `http://openweathermap.org/img/wn/${id}@2x.png` : null;
+const weatherIcon = id =>
+  id ? `http://openweathermap.org/img/wn/${id}@2x.png` : null;
 
 export default function WeatherCard(props) {
   const shortDayName = moment(props?.item?.ms).format('dddd');

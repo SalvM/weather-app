@@ -7,11 +7,12 @@
  */
 
 import React from 'react';
-import {StatusBar, Text, View} from 'react-native';
-import {AddIcon, extendTheme, NativeBaseProvider, Pressable} from 'native-base';
+import type {Node} from 'react';
+import {StatusBar} from 'react-native';
+import {AddIcon, Box, extendTheme, NativeBaseProvider, Pressable} from 'native-base';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import type {Node} from 'react';
+import LinearGradient from 'react-native-linear-gradient';
 
 import DashboardPage from './src/pages/dashboard';
 import CityPage from './src/pages/city';
@@ -19,41 +20,19 @@ import CityPage from './src/pages/city';
 import {WeatherProvider} from './src/contexts/weather';
 
 import colors from './src/styles/colors';
-import { NativeBaseConfigProvider } from 'native-base/lib/typescript/core/NativeBaseContext';
 
 const Stack = createStackNavigator();
 
-function DashboardScreen(props) {
-  return (
-    <WeatherProvider>
-      <DashboardPage {...props} />
-    </WeatherProvider>
-  );
-}
-
-function CityScreen(props) {
-  const {weatherData} = props?.route?.params;
-  props.navigation.setOptions({
-    title: weatherData?.name,
-    headerRight: () => (
-      <Pressable>
-        <AddIcon />
-      </Pressable>
-    ),
-  });
-  return <CityPage {...weatherData} />;
-}
-
 const stackOptions = {
   city: {
-    headerShown: true,
-    headerStyle: {
-      backgroundColor: colors.primary,
-    },
-    headerTintColor: '#f4f4f4',
-    headerTitleStyle: {
-      fontWeight: 'bold',
-    },
+    headerShown: false,
+    // headerStyle: {
+    //   backgroundColor: colors.primary,
+    // },
+    // headerTintColor: '#f4f4f4',
+    // headerTitleStyle: {
+    //   fontWeight: 'bold',
+    // },
   },
 };
 
@@ -87,6 +66,20 @@ const mainTheme = extendTheme({
     },
   },
 });
+
+function DashboardScreen(props) {
+  return (
+    <WeatherProvider>
+      <DashboardPage {...props} />
+    </WeatherProvider>
+  );
+}
+
+function CityScreen(props) {
+  const {weatherData} = props?.route?.params;
+  return <CityPage {...weatherData} navigation={props.navigation} />;
+};
+
 
 const App: () => Node = () => {
   return (
