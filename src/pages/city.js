@@ -96,7 +96,7 @@ export default function City(props) {
   const dailyList = renderDailyList(dailyWeather());
   const iconPath = weatherIcon(weather?.icon);
   const main = weather?.main?.toLowerCase();
-  console.warn({main})
+
   return (
     <Box
       style={styles.container}
