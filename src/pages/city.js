@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, StyleSheet, View} from 'react-native';
-import {Box, Image, Text, useTheme} from 'native-base';
+import {FlatList, StyleSheet} from 'react-native';
+import {Box, Image, Text, useTheme, View} from 'native-base';
 import moment from 'moment';
 
 import colors from '../styles/colors';
@@ -8,6 +8,7 @@ import layout from '../styles/layout';
 import WeatherAPI from './../services/weather';
 
 import WeatherCard from '../components/weatherCard';
+import Timeline from '../components/timeline';
 
 const styles = StyleSheet.create({
   container: {
@@ -25,7 +26,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const weatherIcon = id => id ? `http://openweathermap.org/img/wn/${id}@2x.png` : null;
+const weatherIcon = id =>
+  id ? `http://openweathermap.org/img/wn/${id}@2x.png` : null;
 
 async function getCityFuture(cityName, lat, lon) {
   return new Promise(async (resolve, reject) => {
@@ -54,6 +56,39 @@ const renderDailyList = list => {
   );
 };
 
+function HourlyTimeline(props) {
+  const {list} = props;
+  if (!(list && Array.isArray(list)) && list.length) {
+    return null;
+  }
+
+  const renderChildren = (item, key) => {
+    const size = key === 0 ? 'lg' : 'md';
+    const weight = key === 0 ? 'bold' : '200';
+    return (
+      <View key={`child_${key}`}>
+        <Text color="white" fontSize={size} fontWeight={weight} mt={2}>
+          {item.title}
+        </Text>
+      </View>
+    );
+  };
+
+  const data = list.map(item => {
+    const time = moment(item.ms).format('h a');
+    const title = `${item.temp}°`;
+    const lineColor = colors.white;
+    const lineWidth = 3;
+    return {time, title, lineColor, lineWidth};
+  });
+
+  return (
+    <View>
+      <Timeline datasource={data} renderChildren={renderChildren} />
+    </View>
+  );
+}
+
 export default function City(props) {
   const {gradients} = useTheme();
   const weather = props.weather[0];
@@ -68,12 +103,17 @@ export default function City(props) {
   }, []);
 
   const hourlyWeather = () => {
-    const list = future?.hourly;
+    let list = Object.assign([], future?.hourly);
     if (!(list && Array.isArray(list))) {
       return [];
     }
+
+    const max_hours = 23;
+    if (list.length > max_hours) {
+      list = list.slice(0, list.length - max_hours - 1);
+    }
+
     return list.map((d: any) => ({
-      main: d.weather?.[0]?.main,
       temp: kelvinToCelsius(d.temp),
       ms: d.dt * 1000,
     }));
@@ -113,13 +153,20 @@ export default function City(props) {
       <Text fontSize={'md'} style={styles.whiteCentered}>
         {weather?.main}
       </Text>
-      <View flexDirection="row" alignItems="center" justifyContent="center">
+      <View
+        flexDirection="row"
+        alignItems="center"
+        justifyContent="center"
+        my="6">
         {iconPath && <Image source={{uri: iconPath}} size="lg" alt={main} />}
         {temp && (
           <Text fontSize={'7xl'} style={styles.temp}>
             {temp}°
           </Text>
         )}
+      </View>
+      <View>
+        <HourlyTimeline list={hourlyWeather()} />
       </View>
       <View>{dailyList}</View>
     </Box>

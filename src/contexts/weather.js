@@ -39,7 +39,6 @@ function WeatherProvider({children}) {
     Promise.all(promises)
       .then(results => {
         const cities = results.map(c => ({key: c.name, value: c}));
-        console.warn({res: cities});
         dispatch({type: 'addCities', payload: cities});
       })
       .catch(console.error);
