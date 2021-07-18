@@ -1,7 +1,7 @@
-﻿# weather-app
+# weather-app
  
 A sample weather app using react hook and react-navigation
 
-UX/UI:
-https://projects.invisionapp.com/share/6XYUIPAT9Q7#/screens/432413707
-https://projects.invisionapp.com/share/6XYUIPAT9Q7#/screens/432413708
+## Preview
+ 
+![alt Screenshot 2](https://raw.githubusercontent.com/SalvM/weather-app/main/immagine_2021-07-18_202649.png)
